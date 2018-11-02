@@ -53,49 +53,75 @@ class Board
     end
 
     # have to make this block work in guess the password!
-=begin
+
     def start_game
-        while @turns < 1
-          #  players("K.O.")
-            codebreaker = gets.chomp
-            if codebreaker == "computer"
-                puts @result_array.inspect
+        codebreaker = gets.chomp.downcase
+        if codebreaker == "computer"
+            puts 'PLEASE ENTER YOUR PASSWORD'
+            puts 'Format: red, blue, green, yellow'
+            puts ''
+            puts "Acceptable entries #{@colors.join(' ')}"
+            password = gets.chomp.downcase
+            while guess(password) 
+                make_password(password)
+                
+                puts 'YOU HAVE SUCCESSFULLY GENERATED A PASSWORD'
                 comp_guess = @colors.sample(4)
-                puts "computer guess is:"
-                puts comp_guess.inspect
-                comp_string = comp_guess.join(' ')
-                puts "COMPUTER STRING IS:"
-                puts comp_string.inspect
-                puts "ENTRIES IS:"
-                puts entries.inspect
-                while @result_array.to_a.count(true) < 4
-                   
+                            
+                while @turns < 2    
+                    puts "computer guess is:"
+                    puts comp_guess.inspect
+                    
+                    # making the input an array to an acceptable string
+                    comp_string = comp_guess.join(' ')
+
+                    # holds all the values for the correct password
+                    correct_entries = Array.new(4, nil)
+                            
                     guess(comp_string)
                     check_entry
-                    puts @result_array.inspect
-                    @result_array.to_a.each { |val|
 
-                        if val == true
-                            comp_guess[@result_array.index(true)] = comp_guess[@result_array.index(true)]
+                    @result_array.to_a.each_with_index { |val,spot|
+                                
+                        if val == true                
+                                    
+                            correct_entries.push[spot] = comp_guess[spot]
+
+                        elsif val == false
+
+                            correct_entries.push[spot] = @colors.sample
                         end
                     }      
-                    break if @result_array == nil  || @result_array == []            
-                end
-                @turns += 1
-                puts @turns
-            else
 
-                input = "green green green red"
+                    # turn made
+                    @turns += 1  if make_password(password)
+                    puts "TURN:#{@turns} " 
+
+                    comp_guess = correct_entries
+                end
+            end
+        else
+            generate_password
+            puts 'COMPUTER HAS GENERATED A PASSWORD!'
+            puts ''
+            puts 'PLEASE ENTER YOUR GUESS OF THE PASSWORD'
+            puts 'Format: red, blue, green, yellow'
+            puts ''
+            puts "Acceptable entries #{@colors.join(' ')}"
+            while @turns < 2
+                
+                input = gets.chomp
                 guess(input)
                 check_entry
 
-                 # turn made
-                @turns += 1
-                puts @turns
+                # turn made
+                @turns += 1 if guess(input)
+                puts "TURN:#{@turns} " 
+                
             end
         end
     end
-=end
+
     def guess(array)
 
         puts "THE 'ARRAY' IN GUESS IS?"
@@ -122,61 +148,26 @@ class Board
                     else 
                         puts "Invalid Entry: #{guess} must match the right colors! Must match ones below!"
                         puts "e.g. #{@colors[0]}, #{@colors[1]}, #{@colors[2]}, #{@colors[3]}, #{@colors[4]}, #{@colors[5]}, #{@colors[6].upcase}"
+                        false
                     end
             }
             @check_comma
         end
-        puts "CHECK COMMA is: "
-        puts @check_comma.inspect
-    end
-    def password
-        @password
     end
 
-    def input_password(entry)
-        temp_password = []
-
-        if entry.split('').any?(",")
-            new_check = entry.split('')
-            new_check.delete(",")
-            temp_password = new_check.join.split(' ')
-        
-        else 
-            temp_password = entry.split(' ')
-        end
-        if temp_password.length > 4 || temp_password.length < 0
-            puts "Error: Password must have 4 valid entries"
-        else
-            @password = temp_password
-        end
+    def make_password(array)
+        @password = guess(array)
     end
-=begin
-    def players(codemaker, codebreaker = nil)
-        computer = codemaker.downcase
 
-        if codemaker == "computer" 
-            generate_password
-        else
-            input_password("red, red, red, red")
-        end
-        if codebreaker == "computer"
-
-        else
-
-        end
-    end
-=end
     def generate_password
-        @password = ["orange", "green", "red", "blue"]
-      #  4.times do 
-       # @password.push(@colors.sample.to_s)
-        #end
+        4.times do 
+            @password.push(@colors.sample.to_s)
+        end
     end
 
     def check_entry
         result_array = []
-        puts "THE CHECKED ARRAY INSIDE OF CHECK ENTRY:"
-        puts @check_comma.inspect
+       
         if @check_comma.length > 4 || @check_comma.length < 0
             puts "There must be 4 entries"
         else
@@ -195,17 +186,11 @@ class Board
                 end   
             end  
         end   
-        puts "THE RESULT ARRAY!"
         @result_array = result_array.to_a
-        puts @result_array.inspect 
-        puts result_array.inspect
         @result_array
     end
 
     def guess(array)
-
-        puts "THE 'ARRAY' IN GUESS IS?"
-        puts array
 
         check_comma = []
         
@@ -218,7 +203,7 @@ class Board
             @check_comma = array.split(' ')
         end
 
-        if @check_comma.length > 4 || @check_comma.length < 0
+        if @check_comma.length != 4
             puts "Error"
         else
             @check_comma.each { |guess|
@@ -228,34 +213,19 @@ class Board
                     else 
                         puts "Invalid Entry: #{guess} must match the right colors! Must match ones below!"
                         puts "e.g. #{@colors[0]}, #{@colors[1]}, #{@colors[2]}, #{@colors[3]}, #{@colors[4]}, #{@colors[5]}, #{@colors[6].upcase}"
+                        false
+                        return 
                     end
             }
             @check_comma
         end
-        puts "CHECK COMMA is: "
-        puts @check_comma.inspect
     end
 
     def entries
-        @check_comma = @check_comma
         @check_comma
     end
 end
 
 game = Board.new
-# puts game.generate_password
-# game.start_game
-game.guess("blue, green, red, orange")
-game.generate_password
-game.check_entry
-puts ''
-puts ''
-puts "PASSWORD"
-puts game.password.inspect
-puts "ENTRY/GUESS"
-puts game.entries.inspect
 
-
-=begin
-6 digits
-=end
+game.start_game
