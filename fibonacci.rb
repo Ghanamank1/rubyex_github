@@ -1,7 +1,7 @@
 number = 1
 array = [1,2]
 
-while array.sum < 4000000
+while array.sum < 400
     number = number + 1
     
     array[number] =  array[number-1] + array[number-2] 

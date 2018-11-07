@@ -98,10 +98,11 @@ class Board
             @entry = row, col
         if @board[row-1][col-1] == '-'
             if @player_turn == @player1
-                @board[row-1][col-1] = "X"
+                return @board[row-1][col-1] = "X"
+                
             else
                 @player_turn == @player2
-                @board[row-1][col-1] = "O"
+                return @board[row-1][col-1] = "O"
             end            
             switch_player
         else 
@@ -114,6 +115,8 @@ class Board
         if @entry[0] > 3 || @entry[1] > 3 || @entry[0] < 0 || @entry[1] < 0
             puts " Incorrect row/col! row and col must be within 1 and 3 "
             true
+        elsif @entry[0] =~ /[^0-9]/ && @entry[1] =~ /[^0-9]/
+            puts "Please put an integer"
         end
     end
 
@@ -150,12 +153,14 @@ class Board
             @board.transpose[1].all?("X") || @board.transpose[1].all?("O") ||
             @board.transpose[2].all?("X") || @board.transpose[2].all?("O")       
             puts " #{current_player} WINS!"
-            true
+            return true
             clear_board
        end   
     end
 end
 
-Game.new
+# Game.new
+
+
 
 

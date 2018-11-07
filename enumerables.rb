@@ -23,7 +23,7 @@ module Enumerable
             result.push( self[index] )
             end
         end
-        puts result.inspect
+        result
     end
     def my_all?
         result = []
@@ -98,7 +98,7 @@ module Enumerable
         number
     end
 end
-
+=begin
 def multiply_els array
 
     array.my_inject {|n,m| m*n}
@@ -111,3 +111,6 @@ puts arr.inspect
 puts "all number multiplied equals!"
 
 puts multiply_els [2,4,5]
+=end
+
+# puts [1,2,3,4].my_select {|n| n>2}
